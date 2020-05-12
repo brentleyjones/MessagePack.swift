@@ -91,7 +91,7 @@ public func pack(_ value: MessagePackValue) -> Data {
         precondition(count <= 0xffff_ffff as UInt32)
 
         let prefix: Data
-        if count <= 0x19 {
+        if count <= 0x1f {
             prefix = Data([0xa0 | UInt8(count)])
         } else if count <= 0xff {
             prefix = Data([0xd9, UInt8(count)])
