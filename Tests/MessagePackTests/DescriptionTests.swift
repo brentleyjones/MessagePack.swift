@@ -7,8 +7,8 @@ class DescriptionTests: XCTestCase {
         return [
             ("testNilDescription", testNilDescription),
             ("testBoolDescription", testBoolDescription),
-            ("testIntDescription", testIntDescription),
-            ("testUIntDescription", testUIntDescription),
+            ("testInt8Description", testInt8Description),
+            ("testUInt8Description", testUInt8Description),
             ("testFloatDescription", testFloatDescription),
             ("testDoubleDescription", testDoubleDescription),
             ("testStringDescription", testStringDescription),
@@ -28,16 +28,16 @@ class DescriptionTests: XCTestCase {
         XCTAssertEqual(MessagePackValue.bool(false).description, "bool(false)")
     }
 
-    func testIntDescription() {
-        XCTAssertEqual(MessagePackValue.int(-1).description, "int(-1)")
-        XCTAssertEqual(MessagePackValue.int(0).description, "int(0)")
-        XCTAssertEqual(MessagePackValue.int(1).description, "int(1)")
+    func testInt8Description() {
+        XCTAssertEqual(MessagePackValue.int8(-1).description, "int8(-1)")
+        XCTAssertEqual(MessagePackValue.int8(0).description, "int8(0)")
+        XCTAssertEqual(MessagePackValue.int8(1).description, "int8(1)")
     }
 
-    func testUIntDescription() {
-        XCTAssertEqual(MessagePackValue.uint(0).description, "uint(0)")
-        XCTAssertEqual(MessagePackValue.uint(1).description, "uint(1)")
-        XCTAssertEqual(MessagePackValue.uint(2).description, "uint(2)")
+    func testUInt8Description() {
+        XCTAssertEqual(MessagePackValue.uint8(0).description, "uint8(0)")
+        XCTAssertEqual(MessagePackValue.uint8(1).description, "uint8(1)")
+        XCTAssertEqual(MessagePackValue.uint8(2).description, "uint8(2)")
     }
 
     func testFloatDescription() {
@@ -64,7 +64,7 @@ class DescriptionTests: XCTestCase {
 
     func testArrayDescription() {
         let values: [MessagePackValue] = [1, true, ""]
-        XCTAssertEqual(MessagePackValue.array(values).description, "array([int(1), bool(true), string()])")
+        XCTAssertEqual(MessagePackValue.array(values).description, "array([int64(1), bool(true), string()])")
     }
 
     func testMapDescription() {

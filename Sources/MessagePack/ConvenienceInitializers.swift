@@ -9,12 +9,36 @@ extension MessagePackValue {
         self = .bool(value)
     }
 
-    public init<S: SignedInteger>(_ value: S) {
-        self = .int(Int64(value))
+    public init(_ value: Int8) {
+        self = .int8(value)
     }
 
-    public init<U: UnsignedInteger>(_ value: U) {
-        self = .uint(UInt64(value))
+    public init(_ value: Int16) {
+        self = .int16(value)
+    }
+
+    public init(_ value: Int32) {
+        self = .int32(value)
+    }
+
+    public init(_ value: Int64) {
+        self = .int64(value)
+    }
+
+    public init(_ value: UInt8) {
+        self = .uint8(value)
+    }
+
+    public init(_ value: UInt16) {
+        self = .uint16(value)
+    }
+
+    public init(_ value: UInt32) {
+        self = .uint32(value)
+    }
+
+    public init(_ value: UInt64) {
+        self = .uint64(value)
     }
 
     public init(_ value: Float) {

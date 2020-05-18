@@ -4,8 +4,8 @@ import XCTest
 
 func map(_ count: Int) -> [MessagePackValue: MessagePackValue] {
     var dict = [MessagePackValue: MessagePackValue]()
-    for i in 0 ..< Int64(count) {
-        dict[.int(i)] = .nil
+    for i in 0 ..< UInt64(count) {
+        dict[.uint64(i)] = .nil
     }
 
     return dict
@@ -13,8 +13,8 @@ func map(_ count: Int) -> [MessagePackValue: MessagePackValue] {
 
 func payload(_ count: Int) -> Data {
     var data = Data()
-    for i in 0 ..< Int64(count) {
-        data.append(pack(.int(i)) + pack(.nil))
+    for i in 0 ..< UInt64(count) {
+        data.append(pack(.uint64(i)) + pack(.nil))
     }
 
     return data
@@ -26,12 +26,17 @@ func testPackMap(_ count: Int, prefix: Data) {
     XCTAssertEqual(packed.subdata(in: 0 ..< prefix.count), prefix)
 
     var remainder = Subdata(data: packed, startIndex: prefix.count, endIndex: packed.count)
-    var keys = Set<Int>()
+    var keys = Set<UInt64>()
     do {
         for _ in 0 ..< count {
             let value: MessagePackValue
             (value, remainder) = try unpack(remainder)
-            let key = Int(value.integerValue!)
+            let key: UInt64
+            if case let .uint64(i) = value {
+                key = i
+            } else {
+                preconditionFailure("Improperly made map")
+            }
 
             XCTAssertFalse(keys.contains(key))
             keys.insert(key)

@@ -35,7 +35,7 @@ extension MessagePackValue: ExpressibleByFloatLiteral {
 
 extension MessagePackValue: ExpressibleByIntegerLiteral {
     public init(integerLiteral value: Int64) {
-        self = .int(value)
+        self = .int64(value)
     }
 }
 

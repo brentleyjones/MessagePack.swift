@@ -15,19 +15,19 @@ class ArrayTests: XCTestCase {
 
     func testLiteralConversion() {
         let implicitValue: MessagePackValue = [0, 1, 2, 3, 4]
-        let payload: [MessagePackValue] = [.uint(0), .uint(1), .uint(2), .uint(3), .uint(4)]
+        let payload: [MessagePackValue] = [.int64(0), .int64(1), .int64(2), .int64(3), .int64(4)]
         XCTAssertEqual(implicitValue, .array(payload))
     }
 
     func testPackFixarray() {
-        let value: [MessagePackValue] = [.uint(0), .uint(1), .uint(2), .uint(3), .uint(4)]
+        let value: [MessagePackValue] = [.uint8(0), .uint8(1), .uint8(2), .uint8(3), .uint8(4)]
         let packed = Data([0x95, 0x00, 0x01, 0x02, 0x03, 0x04])
         XCTAssertEqual(pack(.array(value)), packed)
     }
 
     func testUnpackFixarray() {
         let packed = Data([0x95, 0x00, 0x01, 0x02, 0x03, 0x04])
-        let value: [MessagePackValue] = [.uint(0), .uint(1), .uint(2), .uint(3), .uint(4)]
+        let value: [MessagePackValue] = [.uint8(0), .uint8(1), .uint8(2), .uint8(3), .uint8(4)]
 
         let unpacked = try? unpack(packed)
         XCTAssertEqual(unpacked?.value, .array(value))

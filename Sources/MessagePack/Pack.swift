@@ -14,48 +14,6 @@ func packInteger(_ value: UInt64, parts: Int) -> Data {
     return Data(bytes)
 }
 
-/// Packs an unsigned integer into an array of bytes.
-///
-/// - parameter value: The value to encode
-///
-/// - returns: A MessagePack byte representation.
-func packPositiveInteger(_ value: UInt64) -> Data {
-    if value <= 0x7f {
-        return Data([UInt8(truncatingIfNeeded: value)])
-    } else if value <= 0xff {
-        return Data([0xcc, UInt8(truncatingIfNeeded: value)])
-    } else if value <= 0xffff {
-        return Data([0xcd]) + packInteger(value, parts: 2)
-    } else if value <= 0xffff_ffff as UInt64 {
-        return Data([0xce]) + packInteger(value, parts: 4)
-    } else {
-        return Data([0xcf]) + packInteger(value, parts: 8)
-    }
-}
-
-/// Packs a signed integer into an array of bytes.
-///
-/// - parameter value: The value to encode
-///
-/// - returns: A MessagePack byte representation.
-func packNegativeInteger(_ value: Int64) -> Data {
-    precondition(value < 0)
-    if value >= -0x20 {
-        return Data([0xe0 + 0x1f & UInt8(truncatingIfNeeded: value)])
-    } else if value >= -0x7f {
-        return Data([0xd0, UInt8(bitPattern: Int8(value))])
-    } else if value >= -0x7fff {
-        let truncated = UInt16(bitPattern: Int16(value))
-        return Data([0xd1]) + packInteger(UInt64(truncated), parts: 2)
-    } else if value >= -0x7fff_ffff {
-        let truncated = UInt32(bitPattern: Int32(value))
-        return Data([0xd2]) + packInteger(UInt64(truncated), parts: 4)
-    } else {
-        let truncated = UInt64(bitPattern: value)
-        return Data([0xd3]) + packInteger(truncated, parts: 8)
-    }
-}
-
 /// Packs a MessagePackValue into an array of bytes.
 ///
 /// - parameter value: The value to encode
@@ -69,15 +27,39 @@ public func pack(_ value: MessagePackValue) -> Data {
     case .bool(let value):
         return Data([value ? 0xc3 : 0xc2])
 
-    case .int(let value):
-        if value >= 0 {
-            return packPositiveInteger(UInt64(value))
+    case .int8(let value):
+        if value < 0 && value >= -0x20 {
+            // negative fixnum
+            return Data([0xe0 + 0x1f & UInt8(truncatingIfNeeded: value)])
         } else {
-            return packNegativeInteger(value)
+            return Data([0xd0, UInt8(bitPattern: value)])
         }
 
-    case .uint(let value):
-        return packPositiveInteger(value)
+    case .int16(let value):
+        return Data([0xd1]) + packInteger(UInt64(bitPattern: Int64(value)), parts: 2)
+
+    case .int32(let value):
+        return Data([0xd2]) + packInteger(UInt64(bitPattern: Int64(value)), parts: 4)
+
+    case .int64(let value):
+        return Data([0xd3]) + packInteger(UInt64(bitPattern: Int64(value)), parts: 8)
+
+    case .uint8(let value):
+        if value <= 0x7f {
+            // positive fixnum
+            return Data([value])
+        } else {
+            return Data([0xcc, value])
+        }
+
+    case .uint16(let value):
+        return Data([0xcd]) + packInteger(UInt64(value), parts: 2)
+
+    case .uint32(let value):
+        return Data([0xce]) + packInteger(UInt64(value), parts: 4)
+
+    case .uint64(let value):
+        return Data([0xcf]) + packInteger(value, parts: 8)
 
     case .float(let value):
         return Data([0xca]) + packInteger(UInt64(value.bitPattern), parts: 4)

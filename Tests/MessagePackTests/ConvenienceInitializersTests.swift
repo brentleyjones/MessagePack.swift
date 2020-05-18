@@ -29,19 +29,19 @@ class ConvenienceInitializersTests: XCTestCase {
     }
 
     func testUInt() {
-        XCTAssertEqual(MessagePackValue(0 as UInt), MessagePackValue.uint(0))
-        XCTAssertEqual(MessagePackValue(0xff as UInt8), MessagePackValue.uint(0xff))
-        XCTAssertEqual(MessagePackValue(0xffff as UInt16), MessagePackValue.uint(0xffff))
-        XCTAssertEqual(MessagePackValue(0xffff_ffff as UInt32), MessagePackValue.uint(0xffff_ffff))
-        XCTAssertEqual(MessagePackValue(0xffff_ffff_ffff_ffff as UInt64), MessagePackValue.uint(0xffff_ffff_ffff_ffff))
+        XCTAssertEqual(MessagePackValue(0 as UInt8), MessagePackValue.uint8(0))
+        XCTAssertEqual(MessagePackValue(0xff as UInt8), MessagePackValue.uint8(0xff))
+        XCTAssertEqual(MessagePackValue(0xffff as UInt16), MessagePackValue.uint16(0xffff))
+        XCTAssertEqual(MessagePackValue(0xffff_ffff as UInt32), MessagePackValue.uint32(0xffff_ffff))
+        XCTAssertEqual(MessagePackValue(0xffff_ffff_ffff_ffff as UInt64), MessagePackValue.uint64(0xffff_ffff_ffff_ffff))
     }
 
     func testInt() {
-        XCTAssertEqual(MessagePackValue(-1 as Int), MessagePackValue.int(-1))
-        XCTAssertEqual(MessagePackValue(-0x7f as Int8), MessagePackValue.int(-0x7f))
-        XCTAssertEqual(MessagePackValue(-0x7fff as Int16), MessagePackValue.int(-0x7fff))
-        XCTAssertEqual(MessagePackValue(-0x7fff_ffff as Int32), MessagePackValue.int(-0x7fff_ffff))
-        XCTAssertEqual(MessagePackValue(-0x7fff_ffff_ffff_ffff as Int64), MessagePackValue.int(-0x7fff_ffff_ffff_ffff))
+        XCTAssertEqual(MessagePackValue(-1 as Int8), MessagePackValue.int8(-1))
+        XCTAssertEqual(MessagePackValue(-0x7f as Int8), MessagePackValue.int8(-0x7f))
+        XCTAssertEqual(MessagePackValue(-0x7fff as Int16), MessagePackValue.int16(-0x7fff))
+        XCTAssertEqual(MessagePackValue(-0x7fff_ffff as Int32), MessagePackValue.int32(-0x7fff_ffff))
+        XCTAssertEqual(MessagePackValue(-0x7fff_ffff_ffff_ffff as Int64), MessagePackValue.int64(-0x7fff_ffff_ffff_ffff))
     }
 
     func testFloat() {
@@ -62,7 +62,7 @@ class ConvenienceInitializersTests: XCTestCase {
 
 
     func testArray() {
-        XCTAssertEqual(MessagePackValue([.uint(0), .uint(1), .uint(2), .uint(3), .uint(4)]), MessagePackValue.array([.uint(0), .uint(1), .uint(2), .uint(3), .uint(4)]))
+        XCTAssertEqual(MessagePackValue([.uint8(0), .uint8(1), .uint8(2), .uint8(3), .uint8(4)]), MessagePackValue.array([.uint8(0), .uint8(1), .uint8(2), .uint8(3), .uint8(4)]))
     }
 
     func testMap() {

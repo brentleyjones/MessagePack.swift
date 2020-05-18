@@ -123,7 +123,7 @@ public func unpack(_ data: Subdata, compatibility: Bool = false) throws -> (valu
 
     // positive fixint
     case 0x00 ... 0x7f:
-        return (.uint(UInt64(value)), data)
+        return (.uint8(UInt8(value)), data)
 
     // fixmap
     case 0x80 ... 0x8f:
@@ -192,11 +192,27 @@ public func unpack(_ data: Subdata, compatibility: Bool = false) throws -> (valu
         let double = Double(bitPattern: intValue)
         return (.double(double), remainder)
 
-    // uint 8, 16, 32, 64
-    case 0xcc ... 0xcf:
-        let count = 1 << (Int(value) - 0xcc)
-        let (integer, remainder) = try unpackInteger(data, count: count)
-        return (.uint(integer), remainder)
+    // uint 8
+    case 0xcc:
+        let integer = data[0]
+        return (.uint8(integer), data[1 ..< data.count])
+        
+    // uint 16
+    case 0xcd:
+        let (bytes, remainder) = try unpackInteger(data, count: 2)
+        let integer = UInt16(truncatingIfNeeded: bytes)
+        return (.uint16(integer), remainder)
+        
+    // uint 32
+    case 0xce:
+        let (bytes, remainder) = try unpackInteger(data, count: 4)
+        let integer = UInt32(truncatingIfNeeded: bytes)
+        return (.uint32(integer), remainder)
+        
+    // uint 64
+    case 0xcf:
+        let (integer, remainder) = try unpackInteger(data, count: 8)
+        return (.uint64(integer), remainder)
 
     // int 8
     case 0xd0:
@@ -205,25 +221,25 @@ public func unpack(_ data: Subdata, compatibility: Bool = false) throws -> (valu
         }
 
         let byte = Int8(bitPattern: data[0])
-        return (.int(Int64(byte)), data[1 ..< data.count])
+        return (.int8(byte), data[1 ..< data.count])
 
     // int 16
     case 0xd1:
         let (bytes, remainder) = try unpackInteger(data, count: 2)
         let integer = Int16(bitPattern: UInt16(truncatingIfNeeded: bytes))
-        return (.int(Int64(integer)), remainder)
+        return (.int16(integer), remainder)
 
     // int 32
     case 0xd2:
         let (bytes, remainder) = try unpackInteger(data, count: 4)
         let integer = Int32(bitPattern: UInt32(truncatingIfNeeded: bytes))
-        return (.int(Int64(integer)), remainder)
+        return (.int32(integer), remainder)
 
     // int 64
     case 0xd3:
         let (bytes, remainder) = try unpackInteger(data, count: 8)
         let integer = Int64(bitPattern: bytes)
-        return (.int(integer), remainder)
+        return (.int64(integer), remainder)
 
     // fixent 1, 2, 4, 8, 16
     case 0xd4 ... 0xd8:
@@ -265,11 +281,11 @@ public func unpack(_ data: Subdata, compatibility: Bool = false) throws -> (valu
 
     // negative fixint
     case 0xe0 ..< 0xff:
-        return (.int(Int64(value) - 0x100), data)
+        return (.int8(Int8(Int64(value) - 0x100)), data)
 
     // negative fixint (workaround for rdar://19779978)
     case 0xff:
-        return (.int(Int64(value) - 0x100), data)
+        return (.int8(Int8(Int64(value) - 0x100)), data)
 
     default:
         throw MessagePackError.invalidData
